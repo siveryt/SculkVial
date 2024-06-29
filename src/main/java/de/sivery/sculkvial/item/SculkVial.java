@@ -1,7 +1,5 @@
 package de.sivery.sculkvial.item;
 
-
-import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,8 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.PlainTextContent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -32,51 +28,36 @@ public class SculkVial extends Item {
 
         if (user.isSneaking()) {
 
-            @Nullable var nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+            // Fill XP into vial
 
-            NbtCompound requiredNbt = new NbtCompound();
-            //nbtComponent.put
+            @Nullable var nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
+            NbtCompound compound;
+
+            int xp_saved;
 
             if (nbtComponent != null && nbtComponent.contains("sculkvial.experience")) {
 
-                NbtCompound compound = nbtComponent.copyNbt();
+                compound = nbtComponent.copyNbt();
 
-                int xp_saved = compound.getInt("sculkvial.experience");
-                int xp_player = user.totalExperience;
-
-                int xp_toTake = Math.min(Math.max(1395-xp_saved, 0), xp_player);
-
-                stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
-                    currentNbt.putInt("sculkvial.experience", xp_saved + xp_toTake);
-                }));
-
-                // stack.set(DataComponentTypes.CUSTOM_DATA nbtComponent)
-
-                user.addExperience(-xp_toTake);
+                xp_saved = compound.getInt("sculkvial.experience");
 
             } else {
-
-                NbtCompound compound = new NbtCompound();
-
-                int xp_saved = 0;
-                int xp_player = user.totalExperience;
-
-                int xp_toTake = Math.min(Math.max(1395-xp_saved, 0), xp_player);
-
-                stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
-                    currentNbt.putInt("sculkvial.experience", xp_saved + xp_toTake);
-                }));
-
-                // stack.set(DataComponentTypes.CUSTOM_DATA nbtComponent)
-
-                user.addExperience(-xp_toTake);
+                xp_saved = 0;
             }
 
+            int xp_player = user.totalExperience;
 
-            // Remove XP from player
+            int xp_toTake = Math.min(Math.max(1395-xp_saved, 0), xp_player);
+
+            stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> currentNbt.putInt("sculkvial.experience", xp_saved + xp_toTake)));
+
+            user.addExperience(-xp_toTake);
 
             return TypedActionResult.pass(user.getStackInHand(hand));
         } else {
+
+            // Remove XP from vial
+
             @Nullable var nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
 
             if (nbtComponent != null && nbtComponent.contains("sculkvial.experience")) {
@@ -86,9 +67,7 @@ public class SculkVial extends Item {
                 int xp_saved = compound.getInt("sculkvial.experience");
 
 
-                stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> {
-                    currentNbt.putInt("sculkvial.experience", 0);
-                }));
+                stack.apply(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT, comp -> comp.apply(currentNbt -> currentNbt.putInt("sculkvial.experience", 0)));
 
                 user.addExperience(xp_saved);
             }
@@ -103,8 +82,6 @@ public class SculkVial extends Item {
 
         @Nullable var nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
 
-        NbtCompound requiredNbt = new NbtCompound();
-
         return nbtComponent != null && nbtComponent.contains("sculkvial.experience") && nbtComponent.copyNbt().getInt("sculkvial.experience") != 0;
     }
 
@@ -115,7 +92,6 @@ public class SculkVial extends Item {
         @Nullable var nbtComponent = stack.get(DataComponentTypes.CUSTOM_DATA);
 
         if (nbtComponent != null) {
-            NbtCompound requiredNbt = new NbtCompound();
 
             NbtCompound compound = nbtComponent.copyNbt();
 
@@ -126,7 +102,7 @@ public class SculkVial extends Item {
         }
 
 
-        tooltip.add(Text.translatable("tooltip.sculk-vial.sculk_vial").append(String.valueOf(xp_saved) + "/1395"));
+        tooltip.add(Text.translatable("tooltip.sculk-vial.sculk_vial").append(xp_saved + "/1395"));
 
 
 
