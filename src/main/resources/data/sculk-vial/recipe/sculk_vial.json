@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "E E",
+    "E E",
+    "EEE"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:echo_shard"
+    }
+  },
+  "result": {
+    "id": "sculk-vial:sculk_vial",
+    "count": 4
+  }
+}

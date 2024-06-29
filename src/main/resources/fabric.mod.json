@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "sculk-vial",
+	"version": "${version}",
+	"name": "Sculk Vial",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/sculk-vial/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"de.sivery.sculkvial.SculkVial"
+		],
+		"client": [
+			"de.sivery.sculkvial.SculkVialClient"
+		]
+	},
+	"mixins": [
+		"sculk-vial.mixins.json",
+		{
+			"config": "sculk-vial.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
